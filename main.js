@@ -1,18 +1,18 @@
-const apiUrl = 'http://192.168.1.101:8080/api/publicacion'; // Reemplaza con la URL de tu API
+const apiUrl = 'http://192.168.1.101:8080/api/publicacion?pagenumber='; // Reemplaza con la URL de tu API
 
 document.addEventListener('DOMContentLoaded', () => {
   const content = document.getElementById('content');
 
   // Obtener y mostrar las publicaciones
-  fetchPosts();
+  fetchPosts(0);
+  paginador(apiUrl + '0');
 
-  async function fetchPosts() {
+  async function fetchPosts(pageNumber) {
     try {
-      const response = await fetch(apiUrl);
+      const response = await fetch(apiUrl + pageNumber);
       console.log('Estado de la respuesta:', response.status);
       
       const responseData = await response.text();
-      console.log('Cuerpo de la respuesta:', responseData);
   
       const data = JSON.parse(responseData);
       const posts = data.publicaciones;
@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     var contenido = document.getElementById('contenido').value;
     var descripcion = document.getElementById('descripcion').value;
     sendPost(titulo, contenido, descripcion);
-    console.log(JSON.stringify(post));
   });
   
   
@@ -166,32 +165,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+
+
+  async function paginador(apiUrl) {
+    try {
+      const response = await fetch(apiUrl);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Data received:', data);
+      
+      const totalPaginas = data.totalPaginas;
+      console.log('Total pages:', totalPaginas);
+      
+      const paginatorDiv = document.querySelector('#paginator');
+      console.log('Paginator div:', paginatorDiv);
+      
+      if (!paginatorDiv) {
+        throw new Error('No se encontró el elemento #paginator');
+      }
+      
+      paginatorDiv.innerHTML = '';
+      
+      for (let i = 1; i <= totalPaginas; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.value = i;
+        
+        button.addEventListener('click', () => {
+          fetchPosts(i - 1);
+        });
+        
+        paginatorDiv.appendChild(button);
+      }
+      
+      console.log('Buttons created:', paginatorDiv.children.length);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   
-  // Selecciona todos los botones de paginación
-var pageButtons = document.querySelectorAll('.pageButton');
-
-// Agrega un controlador de eventos a cada botón de paginación
-for (var i = 0; i < pageButtons.length; i++) {
-  pageButtons[i].addEventListener('click', function(event) {
-    // Obtiene el número de página del atributo data-page del botón
-    var pageNumber = event.target.getAttribute('data-page');
-
-    // Carga las publicaciones de la página seleccionada
-    loadPosts(pageNumber);
-  });
-}
-
-// Función para cargar las publicaciones de una página específica
-function loadPosts(pageNumber) {
-  fetch(`http://192.168.1.101:8080/api/publicacion?pagenumber=${pageNumber}`)
-    .then(response => response.json())
-    .then(data => {
-      // Muestra las publicaciones en la página
-      // (necesitarás reemplazar esto con tu propio código para mostrar las publicaciones)
-      console.log(data);
-    })
-    .catch(error => console.error('Error:', error));
-}
 
 
 
