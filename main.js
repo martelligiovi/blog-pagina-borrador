@@ -64,15 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
     readMoreButton.addEventListener('click', () => openPost(post.id));
   
     // Crear botones de editar y eliminar
-    const editButton = document.createElement('button');
     const deleteButton = document.createElement('button');
   
     // Agregar texto a los botones
-    editButton.textContent = 'Editar';
     deleteButton.textContent = 'Eliminar';
 
     // Crear contenedores para los botones
     const leftButtonContainer = document.createElement('div');
+    leftButtonContainer.id = 'button-edit-eliminar';
     const rightButtonContainer = document.createElement('div');
 
     // Asignar las clases a los contenedores
@@ -83,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     leftButtonContainer.appendChild(readMoreButton);
 
     // Agregar los botones de "Editar" y "Eliminar" al contenedor de la derecha
-    rightButtonContainer.appendChild(editButton);
     rightButtonContainer.appendChild(deleteButton);
 
     // Agregar los contenedores de botones al elemento de la publicación
@@ -96,9 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     postElement.appendChild(clearDiv);
   
     // Adjuntar eventos de clic a los botones
-    editButton.addEventListener('click', () => {
-      window.location.href = `edit_post.html?id=${post.id}`; // Redirige al usuario a la página de edición de publicaciones
-    });
+  
   
     deleteButton.addEventListener('click', () => {
       const url = `http://192.168.1.101:8080/api/publicacion/${post.id}`;

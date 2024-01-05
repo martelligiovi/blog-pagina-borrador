@@ -35,12 +35,91 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mostrar la publicación
     const postContent = document.getElementById('post-content');
     const postElement = createPostElement(post);
+
+    // Crear el botón de edición
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Editar';
+    editButton.style.position = 'absolute';
+    editButton.style.right = '10px';
+    editButton.style.bottom = '10px';
+
+
+    editButton.addEventListener('click', () => {
+      const updatePostPanel = document.getElementById('updatePostForm');
+      updatePostPanel.style.display = 'block';
+  
+      // Llenar los campos del panel con los datos actuales de la publicación
+      const data = handleUpdatePost()
+      console.log(data);
+
+      const url = `http://192.168.1.101:8080/api/publicacion/${post.id}`;
+
+      fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data), // Asegúrate de que este es el formato correcto para tu API
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al editar el comentario');
+        }
+      })
+      .catch(error => console.error('Error:', error));
+
+
+
+      
+
+
+      window.location.href = 'http://192.168.1.66:8080/edit/' + post.id;
+  });
+
+    // Agregar el botón de edición al postElement
+    postElement.appendChild(editButton);
+
     postContent.appendChild(postElement);
 
     // Obtener y mostrar los comentarios
-  fetchComments(post.id);
+    fetchComments(post.id);
+}
+
+
+function handleUpdatePost() {
+  // Obtén los valores de los campos del formulario
+  const titleInput = document.getElementById('title-input');
+  const contentInput = document.getElementById('content-input');
+  const descriptionInput = document.getElementById('description-input');
+
+  // Comprueba si cada campo está vacío
+  if (titleInput.value.trim() !== '') {
+      // Si el campo de título no está vacío, actualiza el título del post
+      post.title = titleInput.value;
+  }
+  // Haz lo mismo para el contenido del post
+  if (contentInput.value.trim() !== '') {
+      post.content = contentInput.value;
   }
 
+  data = {
+      "titulo": post.title,
+      "contenido": post.content,
+      "descripcion": post.description
+  };
+
+  // Llama a la función que actualiza el post en la base de datos
+  return data;
+
+}
+
+
+
+
+
+
+
+  
   function createPostElement(post) {
     const postElement = document.createElement('div');
     postElement.classList.add('post');

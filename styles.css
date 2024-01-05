@@ -162,7 +162,7 @@ body {
   position: relative;
 }
 
-.button-container {
+#button-edit-eliminar {
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -188,5 +188,51 @@ body {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+#updatePostForm {
+  position: absolute;
+  top: 76px;
+  left: 50%;
+  z-index: 1;
+  background: white;
+  padding: 20px;
+  width: 502px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+#updatePostForm label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#updatePostForm input[type="text"] {
+  width: calc(100% - 22px); /* Resta el margen izquierdo y derecho del ancho total */
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+#updatePostForm input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#updatePostForm input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+#updatePostForm textarea {
+  width: calc(100% - 22px); /* Resta el margen izquierdo y derecho del ancho total */
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
 }
 
