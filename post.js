@@ -1,4 +1,4 @@
-const apiUrl = 'http://192.168.1.101:8080/api/publicacion'; // Reemplaza con la URL de tu API
+const apiUrl = 'http://192.168.1.66:8082/api/publicacion'; // Reemplaza con la URL de tu API
 
 document.addEventListener('DOMContentLoaded', () => {
   const postContent = document.getElementById('post-content');
@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const postId = getPostIdFromUrl();
       console.log(getPostIdFromUrl());
-      const postResponse = await fetch(`http://192.168.1.101:8080/api/publicacion/${postId}`);
+      const postResponse = await fetch(`http://192.168.1.66:8082/api/publicacion/${postId}`);
       const postData = await postResponse.json();
+      console.log(postData);
   
       // Mostrar el título de la publicación en  el header
       document.querySelector('header h1').textContent = postData.titulo;
@@ -26,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inicioButton = document.getElementById('inicioButton');
   inicioButton.addEventListener('click', () => {
     // Redirigir a la página principal (ajusta la URL según sea necesario)
-    window.location.href = 'http://192.168.1.66:8080/';
+    window.location.href = 'http://192.168.1.66:8081';
   });
 
   
@@ -47,34 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
     editButton.addEventListener('click', () => {
       const updatePostPanel = document.getElementById('updatePostForm');
       updatePostPanel.style.display = 'block';
-  
-      // Llenar los campos del panel con los datos actuales de la publicación
-      const data = handleUpdatePost()
-      console.log(data);
 
-      const url = `http://192.168.1.101:8080/api/publicacion/${post.id}`;
-
-      fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data), // Asegúrate de que este es el formato correcto para tu API
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Error al editar el comentario');
-        }
-      })
-      .catch(error => console.error('Error:', error));
-
-
-
-      
-
-
-      window.location.href = 'http://192.168.1.66:8080/edit/' + post.id;
+        console.log(post);
+      titulo.value = post.titulo;
+      descripcion.value = post.descripcion;
+      contenido.value = post.contenido; 
   });
+  
+
 
     // Agregar el botón de edición al postElement
     postElement.appendChild(editButton);
@@ -84,37 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Obtener y mostrar los comentarios
     fetchComments(post.id);
 }
-
-
-function handleUpdatePost() {
-  // Obtén los valores de los campos del formulario
-  const titleInput = document.getElementById('title-input');
-  const contentInput = document.getElementById('content-input');
-  const descriptionInput = document.getElementById('description-input');
-
-  // Comprueba si cada campo está vacío
-  if (titleInput.value.trim() !== '') {
-      // Si el campo de título no está vacío, actualiza el título del post
-      post.title = titleInput.value;
-  }
-  // Haz lo mismo para el contenido del post
-  if (contentInput.value.trim() !== '') {
-      post.content = contentInput.value;
-  }
-
-  data = {
-      "titulo": post.title,
-      "contenido": post.content,
-      "descripcion": post.description
-  };
-
-  // Llama a la función que actualiza el post en la base de datos
-  return data;
-
-}
-
-
-
 
 
 
@@ -149,7 +99,7 @@ function handleUpdatePost() {
 
   async function fetchComments(postId) {
     try {
-      const commentsResponse = await fetch(`http://192.168.1.101:8080/api/publicacion/${postId}/comentarios`);
+      const commentsResponse = await fetch(`http://192.168.1.66:8082/api/publicacion/${postId}/comentarios`);
       const commentsData = await commentsResponse.json();
   
       // Mostrar los comentarios
@@ -208,7 +158,7 @@ function handleUpdatePost() {
             return;
           }
 
-          const url = `http://192.168.1.101:8080/api/comentarios/${commentId}`;
+          const url = `http://192.168.1.66:8082/api/comentarios/${commentId}`;
 
           fetch(url, {
             method: 'PUT',
@@ -265,7 +215,7 @@ function handleUpdatePost() {
     // Muestra el formulario cuando se hace clic en "Crear un comentario"
     commentFormContainer.style.display = 'block';
   });
-  
+
   commentForm.addEventListener('submit', (event) => {
     event.preventDefault();
   
@@ -279,9 +229,32 @@ function handleUpdatePost() {
     // Aquí puedes agregar lógica para mostrar el comentario en la página si es necesario
   });
   
+
+
+  // Agregar el botón de eliminar al comentario
+    //commentElement.appendChild(deleteButton);
+
+
+
+  function deleteComment(commentId, commentElement) {
+    const url = `http://192.168.1.66:8082/api/comentarios/${commentId}`;
+
+    fetch(url, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al eliminar el comentario');
+      }
+      console.log('Comentario eliminado'); // Para verificar que el comentario se está eliminando
+      commentElement.remove(); // Elimina el comentario del DOM
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
   function sendComment(cuerpo) {
     const postId = getPostIdFromUrl();
-    const url = `http://192.168.1.101:8080/api/publicacion/${postId}/comentarios`;
+    const url = `http://192.168.1.66:8082/api/publicacion/${postId}/comentarios`;
 
     const data = {
       "nombre": "anonimo",
@@ -303,27 +276,6 @@ function handleUpdatePost() {
     })
     .then(data => {
       location.reload();
-    })
-    .catch(error => console.error('Error:', error));
-  }
-
-  // Agregar el botón de eliminar al comentario
-  commentElement.appendChild(deleteButton);
-
-
-
-  function deleteComment(commentId, commentElement) {
-    const url = `http://192.168.1.101:8080/api/comentarios/${commentId}`;
-
-    fetch(url, {
-      method: 'DELETE',
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Error al eliminar el comentario');
-      }
-      console.log('Comentario eliminado'); // Para verificar que el comentario se está eliminando
-      commentElement.remove(); // Elimina el comentario del DOM
     })
     .catch(error => console.error('Error:', error));
   }

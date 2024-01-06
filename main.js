@@ -1,4 +1,4 @@
-const apiUrl = 'http://192.168.1.101:8080/api/publicacion?pagenumber='; // Reemplaza con la URL de tu API
+const apiUrl = 'http://192.168.1.66:8082/api/publicacion?pagenumber='; // Reemplaza con la URL de tu API
 
 document.addEventListener('DOMContentLoaded', () => {
   const content = document.getElementById('content');
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   
     deleteButton.addEventListener('click', () => {
-      const url = `http://192.168.1.101:8080/api/publicacion/${post.id}`;
+      const url = `http://192.168.1.66:8082/api/publicacion/${post.id}`;
   
       fetch(url, {
         method: 'DELETE',
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   function sendPost(titulo, contenido, descripcion) {
-    const url = `http://192.168.1.101:8080/api/publicacion`;
+    const url = `http://192.168.1.66:8082/api/publicacion`;
     const post = {
       titulo: titulo,
       contenido: contenido,
